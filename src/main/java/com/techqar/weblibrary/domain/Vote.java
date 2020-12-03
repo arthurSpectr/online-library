@@ -1,4 +1,4 @@
-package com.techqar.springlibrary.domain;
+package com.techqar.weblibrary.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SelectBeforeUpdate;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.Date;
 
 @Entity
 @Getter
@@ -18,21 +18,17 @@ import java.util.List;
 @SelectBeforeUpdate
 @EqualsAndHashCode(of = "id")
 @Table(catalog = "spring_learning")
-public class Publisher {
+public class Vote {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
-    private String name;
+    private String value;
 
-    @Basic(fetch = FetchType.LAZY)
-    @OneToMany(mappedBy = "publisher")
-    private List<Book> books;
+    @Column(name = "book_id")
+    private Date bookId;
 
-    @Override
-    public String toString() {
-        return name;
-    }
+    private String username;
 
 }

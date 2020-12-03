@@ -1,4 +1,4 @@
-package com.techqar.springlibrary.domain;
+package com.techqar.weblibrary.domain;
 
 
 import lombok.EqualsAndHashCode;

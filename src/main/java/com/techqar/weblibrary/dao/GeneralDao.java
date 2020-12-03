@@ -1,8 +1,8 @@
-package com.techqar.springlibrary.dao;
+package com.techqar.weblibrary.dao;
 
 import java.util.List;
 
-public interface Crud<T> {
+public interface GeneralDao<T> {
     List<T> getAll();
     T get(long id);
     T save(T object);

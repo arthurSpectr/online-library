@@ -1,4 +1,4 @@
-package com.techqar.springlibrary.domain;
+package com.techqar.weblibrary.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,30 +8,32 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SelectBeforeUpdate;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Table(name = "author", catalog = "weblibrary")
+@EqualsAndHashCode(of = "id")
+@Getter @Setter
 @DynamicUpdate
 @DynamicInsert
 @SelectBeforeUpdate
-@EqualsAndHashCode(of = "id")
-@Table(catalog = "spring_learning")
-public class Genre {
+public class Author {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
 
-    private String name;
+    private String fio;
+
+    private Date birthday;
 
     @Basic(fetch = FetchType.LAZY)
-    @OneToMany(mappedBy = "genre")
+    @OneToMany(mappedBy = "author")
     private List<Book> books;
 
     @Override
     public String toString() {
-        return name;
+        return fio;
     }
 }
