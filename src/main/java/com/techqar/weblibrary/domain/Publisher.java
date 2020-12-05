@@ -17,7 +17,7 @@ import java.util.List;
 @DynamicInsert
 @SelectBeforeUpdate
 @EqualsAndHashCode(of = "id")
-@Table(catalog = "spring_learning")
+@Table(catalog = "weblibrary")
 public class Publisher {
 
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -17,7 +17,7 @@ import java.util.Date;
 @DynamicInsert
 @SelectBeforeUpdate
 @EqualsAndHashCode(of = "id")
-@Table(catalog = "spring_learning")
+@Table(catalog = "weblibrary")
 public class Vote {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)

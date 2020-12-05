@@ -11,7 +11,7 @@ import org.hibernate.annotations.SelectBeforeUpdate;
 import javax.persistence.*;
 
 @Entity
-@Table(catalog = "spring_learning")
+@Table(catalog = "weblibrary")
 @EqualsAndHashCode(of = "id")
 @Getter
 @Setter
@@ -22,7 +22,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(Long id, String name, Integer pageCount, String isbn, Genre genre, Author author, Publisher publisher, Integer publishYear, byte[] image, String descr, long viewCount, long totalRating, long totalVoteCount, int avgRating) {
+    public Book(Long id, String name, Integer pageCount, String isbn, Genre genre, Author author, Publisher publisher, Integer publishYear, byte[] image, String descr, Long viewCount, Long totalRating, Long totalVoteCount, Integer avgRating) {
         this.id = id;
         this.name = name;
         this.pageCount = pageCount;
@@ -80,16 +80,16 @@ public class Book {
     private String descr;
 
     @Column(name = "view_count")
-    private long viewCount;
+    private Long viewCount;
 
     @Column(name = "total_rating")
-    private long totalRating;
+    private Long totalRating;
 
     @Column(name = "total_vote_count")
-    private long totalVoteCount;
+    private Long totalVoteCount;
 
     @Column(name = "avg_rating")
-    private long avgRating;
+    private Integer avgRating;
 
     @Override
     public String toString() {
