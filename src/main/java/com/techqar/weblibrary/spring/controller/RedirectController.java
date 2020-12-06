@@ -1,5 +1,10 @@
 package com.techqar.weblibrary.spring.controller;
 
+import com.techqar.weblibrary.dao.impl.AuthorService;
+import com.techqar.weblibrary.dao.impl.BookService;
+import com.techqar.weblibrary.dao.impl.GenreService;
+import com.techqar.weblibrary.dao.impl.PublisherService;
+import com.techqar.weblibrary.domain.Author;
 import com.techqar.weblibrary.domain.Book;
 import com.techqar.weblibrary.spring.repo.AuthorRepo;
 import com.techqar.weblibrary.spring.repo.BookRepo;
@@ -20,6 +25,7 @@ import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Date;
 import java.util.Optional;
 
 @Controller
@@ -38,10 +44,21 @@ public class RedirectController {
     @Autowired
     private PublisherRepo publisherRepo;
 
-    @Transactional
+    @Autowired
+    private AuthorService authorService;
+
+    @Autowired
+    private BookService bookService;
+
+    @Autowired
+    private GenreService genreService;
+
+    @Autowired
+    private PublisherService publisherService;
+
     @RequestMapping(value = "", method = RequestMethod.GET)
     public String baseUrlRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Page<Book> books = bookRepo.findByGenre(1L, PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "name")));
+
 
 
         return "ok";

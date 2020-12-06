@@ -20,8 +20,10 @@ import java.util.List;
 @Table(catalog = "weblibrary")
 public class Genre {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "genre_generator")
+    @SequenceGenerator(name="genre_generator", sequenceName = "genre_id_seq", initialValue = 0, allocationSize = 1)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
     private String name;

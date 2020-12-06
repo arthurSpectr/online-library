@@ -20,8 +20,10 @@ import java.util.Date;
 @Table(catalog = "weblibrary")
 public class Vote {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vote_generator")
+    @SequenceGenerator(name="vote_generator", sequenceName = "vote_id_seq", initialValue = 0, allocationSize = 1)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
     private String value;

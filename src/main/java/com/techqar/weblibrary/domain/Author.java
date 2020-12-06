@@ -12,16 +12,18 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "author", catalog = "weblibrary")
-@EqualsAndHashCode(of = "id")
-@Getter @Setter
 @DynamicUpdate
 @DynamicInsert
+@Getter @Setter
 @SelectBeforeUpdate
+@EqualsAndHashCode(of = "id")
+@Table(name = "author", catalog = "weblibrary")
 public class Author {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "author_generator")
+    @SequenceGenerator(name="author_generator", sequenceName = "author_id_seq", initialValue = 0, allocationSize = 1)
+    @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
     private String fio;
