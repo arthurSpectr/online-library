@@ -28,8 +28,8 @@ public class Publisher {
 
     private String name;
 
-    @Basic(fetch = FetchType.LAZY)
-    @OneToMany(mappedBy = "publisher")
+//    @Basic(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "publisher", fetch = FetchType.LAZY)
     private List<Book> books;
 
     @Override

@@ -28,8 +28,8 @@ public class Genre {
 
     private String name;
 
-    @Basic(fetch = FetchType.LAZY)
-    @OneToMany(mappedBy = "genre")
+//    @Basic(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY)
     private List<Book> books;
 
     @Override
