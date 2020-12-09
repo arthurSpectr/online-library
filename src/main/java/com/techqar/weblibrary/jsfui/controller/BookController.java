@@ -17,7 +17,10 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionListener;
 import java.util.List;
+import java.util.ResourceBundle;
 
 @ManagedBean
 @SessionScoped
@@ -37,13 +40,19 @@ public class BookController extends AbstractController<Book> {
     private SearchType searchType; // запоминает последний выбранный вариант поиска
 
     @Autowired
-    private BookDao bookDao;// будет автоматически подставлен BookService, т.к. Spring контейнер по-умолчанию ищет бин-реализацию по типу
+    private BookDao bookDao;
+
+    @Autowired
+    private GenreDao genreDao;
 
     private LazyDataTable<Book> lazyModel; // класс-утилита, которая помогает выводить данные постранично (работает в паре с компонентами на странице JSF)
 
     private Page<Book> bookPages; //хранит список найденных книг
     private List<Book> topBooks;
 
+    private String searchText;
+
+    private long selectedGenreId;
 
     @PostConstruct
     public void init() {
@@ -66,7 +75,7 @@ public class BookController extends AbstractController<Book> {
 
             switch (searchType) {
                 case SEARCH_GENRE:
-
+                    bookPages = bookDao.findByGenre(pageNumber, pageSize, sortField, sortDirection, selectedGenreId);
                     break;
                 case SEARCH_TEXT:
                     break;
@@ -84,6 +93,41 @@ public class BookController extends AbstractController<Book> {
     public List<Book> getTopBooks() {
         topBooks = bookDao.findTopBooks(TOP_BOOKS_LIMIT);
         return topBooks;
+    }
+
+    public void showBookByGenre(Long selectedGenreId) {
+        searchType = SearchType.SEARCH_GENRE;
+        this.selectedGenreId = selectedGenreId;
+    }
+
+    public void showAll() {
+        searchType = SearchType.ALL;
+    }
+
+    public String getSearchMessage() {
+        ResourceBundle bundle = ResourceBundle.getBundle("weblibrary", FacesContext.getCurrentInstance().getViewRoot().getLocale());
+
+        String message = null;
+
+        if(null == searchType) {
+            return null;
+        }
+
+        switch (searchType) {
+            case SEARCH_GENRE:
+                message = bundle.getString("genre") + ": '" + genreDao.get(selectedGenreId) + "'";
+                break;
+            case SEARCH_TEXT:
+
+                if(null == searchText || searchText.trim().length()==0) {
+                    return null;
+                }
+
+                message = bundle.getString("search") + ": '" + searchText + "'";
+                break;
+        }
+
+        return message;
     }
 
 }

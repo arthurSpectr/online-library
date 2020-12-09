@@ -8,14 +8,19 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import java.util.List;
 
 @Getter
 @Setter
-@Controller
+@ManagedBean
+@SessionScoped
+@Component
 public class GenreController extends AbstractController<Genre> {
 
     private int rowsCount = 20;
