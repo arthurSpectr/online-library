@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 public interface BookRepo extends JpaRepository<Book, Long> {
-//    List<Book> findByNameContainingIgnoreCaseOrAuthorFioContainingIgnoreCaseOrderByName(String name, String fio);
+    Page<Book> findByNameContainingIgnoreCaseOrAuthorFioContainingIgnoreCaseOrderByName(String name, String fio, Pageable pageable);
     List<Book> findByNameIgnoreCaseOrAuthorFioIgnoreCaseOrderByName(String name, String fio);
 
     @Query("select new com.techqar.weblibrary.domain.Book(b.id, b.name, b.pageCount, b.isbn, b.genre, b.author, b.publisher, b.publishYear, b.image, b.descr, b.viewCount, b.totalRating, b.totalVoteCount, b.avgRating) from Book b")
