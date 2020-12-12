@@ -9,6 +9,9 @@ import com.techqar.weblibrary.jsfui.model.LazyDataTable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.CloseEvent;
+import org.primefaces.event.FileUploadEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -45,7 +48,14 @@ public class BookController extends AbstractController<Book> {
     @Autowired
     private GenreDao genreDao;
 
+    @Autowired
+    private GenreController genreController;
+
+    private Book selectedBook;
     private LazyDataTable<Book> lazyModel; // класс-утилита, которая помогает выводить данные постранично (работает в паре с компонентами на странице JSF)
+
+    private byte[] uploadedImage;
+    private byte[] uploadedContent;
 
     private Page<Book> bookPages; //хранит список найденных книг
     private List<Book> topBooks;
@@ -59,6 +69,19 @@ public class BookController extends AbstractController<Book> {
         lazyModel = new LazyDataTable<>(this);
     }
 
+    public void save() {
+
+        if(null != uploadedImage) {
+            selectedBook.setImage(uploadedImage);
+        }
+
+        if(null != uploadedContent) {
+            selectedBook.setContent(uploadedContent);
+        }
+
+        bookDao.save(selectedBook);
+        RequestContext.getCurrentInstance().execute("PF('dialogEditBook').hide()");
+    }
 
     // метод автоматически вызывается из LazyDataTable
     @Override
@@ -89,6 +112,26 @@ public class BookController extends AbstractController<Book> {
 
 
         return bookPages;
+    }
+
+
+    @Override
+    public void addAction() {
+
+    }
+
+    @Override
+    public void editAction() {
+        uploadedImage = selectedBook.getImage();
+
+        // выбранный book уже будет записан в переменную selectedBook (как только пользователь кликнет на редактирование)
+        // книга отобразится в диалоговом окне
+        RequestContext.getCurrentInstance().execute("PF('dialogEditBook').show()");
+    }
+
+    @Override
+    public void deleteAction() {
+
     }
 
     public List<Book> getTopBooks() {
@@ -131,8 +174,45 @@ public class BookController extends AbstractController<Book> {
         return message;
     }
 
+    public byte[] getContent(long id) {
+
+        byte[] content;
+
+        if(uploadedContent != null) {
+            content = uploadedContent;
+        } else {
+            content = bookDao.getContent(id);
+        }
+
+        return content;
+    }
+
+    public void uploadImage(FileUploadEvent event) {
+        if(event.getFile() != null) {
+            uploadedImage = event.getFile().getContents();
+        }
+    }
+
+    public void uploadContent(FileUploadEvent event) {
+        if(event.getFile() != null) {
+            uploadedContent = event.getFile().getContents();
+        }
+    }
+
     public void searchAction() {
         searchType = SearchType.SEARCH_TEXT;
+    }
+
+    public void updateViewCount(long viewCount, long id) {
+        bookDao.updateViewCount(viewCount+1, id);
+    }
+
+    public Page<Book> getBookPages(){
+        return bookPages;
+    }
+
+    public void onCloseDialog(CloseEvent event) {
+        uploadedContent = null;
     }
 
 }

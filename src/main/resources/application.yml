@@ -1,0 +1,29 @@
+logging:
+    file:
+        name: c:\temp\app.log
+    level:
+        ROOT: error
+        javax:
+            faces: warn
+        org:
+            hibernate: warn
+            hibernate.type.descriptor.sql: warn
+            omnifaces: warn
+            springframework: warn
+            springframework.security: warn
+    pattern:
+        file: '%d{HH:mm:ss} %-5p [%c] - %m%n'
+spring:
+    datasource:
+        default-catalog: weblibrary
+        jndi-name: jdbc/postgres
+    jpa:
+        open-in-view: false
+        properties:
+            hibernate:
+                current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+                dialect: org.hibernate.dialect.PostgreSQLDialect
+                format_sql: true
+        show-sql: false
+    main:
+        banner-mode: 'off'

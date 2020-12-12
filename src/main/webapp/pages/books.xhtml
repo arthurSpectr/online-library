@@ -16,6 +16,8 @@
 
         <ui:define name="content">
 
+            <ui:include src="/templates/dialogs/edit-dialog.xhtml"/>
+
             <!-- форма должны быть вне таблицы с данными, чтобы отрабатывать все кнопки и ссылки внутри формы -->
             <h:form id="booksForm">
 
@@ -47,7 +49,12 @@
 
                         <!--обложка книги-->
                         <div class="book-icon">
-                            <o:graphicImage cache="false" value="#{book.image}" dataURI="true" />
+                            <h:outputLink value="#{request.contextPath}/PdfContent" target="_blank" styleClass="read-link">
+
+                                <f:param name="id" value="#{book.id}" />
+                                <f:param name="viewCount" value="#{book.viewCount}" />
+                                <o:graphicImage cache="false" value="#{book.image}" dataURI="true" />
+                            </h:outputLink>
                         </div>
 
 
@@ -82,12 +89,19 @@
 
 
                         <!--инструменты администратора (редактирование, удаление)-->
-                        <p:outputPanel layout="block" styleClass="admin-region" >
+                        <p:outputPanel layout="block" styleClass="admin-region">
+
                             <p:commandLink title="#{msg.delete}">
+
                                 <o:graphicImage name="images/delete.png" styleClass="delete-icon" dataURI="true"/>
+
                             </p:commandLink>
 
-                            <p:commandLink title="#{msg.edit}">
+                            <p:commandLink title="#{msg.edit}"
+                                           action="#{bookController.editAction()}"
+                                           update="@([id$=dialogEditBook])">
+                                <f:setPropertyActionListener value="#{book}"
+                                                             target="#{bookController.selectedBook}"/>
                                 <o:graphicImage name="images/edit.png" styleClass="edit-icon" dataURI="true"/>
                             </p:commandLink>
                         </p:outputPanel>

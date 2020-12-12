@@ -40,9 +40,28 @@ public class GenreController extends AbstractController<Genre> {
         lazyModel = new LazyDataTable<>(this);
     }
 
+    public List<Genre> find(String name) {
+        return genreDao.search(name);
+    }
+
     @Override
     public Page<Genre> search(int first, int count, String sortField, Sort.Direction sortDirection) {
         return genrePages;
+    }
+
+    @Override
+    public void addAction() {
+
+    }
+
+    @Override
+    public void editAction() {
+
+    }
+
+    @Override
+    public void deleteAction() {
+
     }
 
     public List<Genre> getAll() {
