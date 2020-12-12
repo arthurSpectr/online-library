@@ -38,5 +38,5 @@ public interface BookRepo extends JpaRepository<Book, Long> {
 
     @Modifying
     @Query("update Book b set b.totalRating=:totalRating, b.totalVoteCount=:totalVoteCount, b.avgRating=:avgRating where b.id=:id")
-    void updateRating(@Param("totalRating") long totalRating, @Param("totalVoteCount") long totalVoteCount, @Param("avgRating") long avgRating, @Param("id") long id);
+    void updateRating(@Param("totalRating") long totalRating, @Param("totalVoteCount") long totalVoteCount, @Param("avgRating") int avgRating, @Param("id") long id);
 }

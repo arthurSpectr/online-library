@@ -17,6 +17,7 @@
         <ui:define name="content">
 
             <ui:include src="/templates/dialogs/edit-dialog.xhtml"/>
+            <ui:include src="/templates/dialogs/confirm-dialog.xhtml"/>
 
             <!-- форма должны быть вне таблицы с данными, чтобы отрабатывать все кнопки и ссылки внутри формы -->
             <h:form id="booksForm">
@@ -80,6 +81,10 @@
                                 <!--голосование-->
                                 <div style="width:60%; float:right;">
                                     <p:rating id="rating" value="#{book.avgRating}" styleClass="rating" cancel="false" stars="5">
+
+                                        <p:ajax event="rate" listener="#{bookController.onRate}" update="@([id$=booksList])" onsuccess="alert('Спасибо')" />
+                                        <f:param name="bookIndex" value="#{rowIndexVar}" />
+
                                     </p:rating>
                                 </div>
                             </div>
@@ -91,7 +96,11 @@
                         <!--инструменты администратора (редактирование, удаление)-->
                         <p:outputPanel layout="block" styleClass="admin-region">
 
-                            <p:commandLink title="#{msg.delete}">
+                            <p:commandLink title="#{msg.delete}" action="#{bookController.deleteAction}" update=":booksForm:booksList">
+
+                                <p:confirm header="#{msg.confirm}" message="#{msg.prompt_delete}" icon="ui-icon-alert" />
+
+                                <f:setPropertyActionListener value="#{book}" target="#{bookController.selectedBook}" />
 
                                 <o:graphicImage name="images/delete.png" styleClass="delete-icon" dataURI="true"/>
 
