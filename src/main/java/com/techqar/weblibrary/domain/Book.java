@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.SelectBeforeUpdate;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 
@@ -53,7 +54,7 @@ public class Book {
 
     private String name;
 
-    @Lob
+    @Type(type = "org.hibernate.type.BinaryType")
     @Column(updatable = false)
     private byte[] content;
 

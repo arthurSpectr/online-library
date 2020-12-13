@@ -1,24 +1,30 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.0'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
-    id 'war'
+buildscript {
+    ext {
+        springBootVersion = '2.3.3.RELEASE'
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
 }
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 springBoot {
     mainClassName = 'com.techqar.weblibrary.ServletInitializer'
-}
-war {
-    archiveBaseName = 'weblibrary'
-    version = '0.0.1-SNAPSHOT'
 }
 
 group = 'com.techqar'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-ext['hibernate.version'] = '5.4.2.Final'
 
 configurations {
     providedRuntime
@@ -37,16 +43,18 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: '2.4.0'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.4.0'
-//    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.4.0'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '2.4.0'
+
+    implementation("org.springframework.boot:spring-boot-starter-web") // веб возможности Spring
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa") // работа с БД
+    implementation("org.springframework.boot:spring-boot-starter-security") // авторизация, аутентификация
+    implementation("org.springframework.boot:spring-boot-starter-aop") // для использования аспектов (отлавливание ошибок, действий пользователя - для отображения сообщений)
+    implementation("org.springframework.boot:spring-boot-starter-actuator")// служебные данные во время работы приложения (бины, endpoints и пр.)
 
     providedCompile group: 'org.projectlombok', name: 'lombok', version: '1.18.16'
     annotationProcessor 'org.projectlombok:lombok:1.18.6'
     compile group: 'com.google.guava', name: 'guava', version: '30.0-jre'
     compile group: 'org.postgresql', name: 'postgresql', version: '42.2.18'
-    providedCompile group: 'javax', name: 'javaee-api', version: '8.0.1'
+    providedCompile group: 'javax', name: 'javaee-api', version: '7.0'
 
     //frontend
     compile group: 'org.primefaces', name: 'primefaces', version: '6.0'

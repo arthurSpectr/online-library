@@ -11,6 +11,9 @@ public abstract class AbstractController<T> implements Serializable {
     // постранично выводит книги
     public abstract Page<T> search(int first, int count, String sortField, Sort.Direction sortDirection);
 
+    public abstract void addAction();
+    public abstract void editAction();
+    public abstract void deleteAction();
 
 }
 

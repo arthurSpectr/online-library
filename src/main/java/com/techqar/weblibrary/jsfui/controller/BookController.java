@@ -3,12 +3,16 @@ package com.techqar.weblibrary.jsfui.controller;
 import com.techqar.weblibrary.dao.BookDao;
 import com.techqar.weblibrary.dao.GenreDao;
 import com.techqar.weblibrary.domain.Book;
-import com.techqar.weblibrary.domain.Genre;
 import com.techqar.weblibrary.jsfui.enums.SearchType;
 import com.techqar.weblibrary.jsfui.model.LazyDataTable;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
+import org.apache.commons.io.IOUtils;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.CloseEvent;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.RateEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
@@ -18,8 +22,10 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionListener;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 @ManagedBean
@@ -45,7 +51,14 @@ public class BookController extends AbstractController<Book> {
     @Autowired
     private GenreDao genreDao;
 
+    @Autowired
+    private GenreController genreController;
+
+    private Book selectedBook;
     private LazyDataTable<Book> lazyModel; // класс-утилита, которая помогает выводить данные постранично (работает в паре с компонентами на странице JSF)
+
+    private byte[] uploadedImage;
+    private byte[] uploadedContent;
 
     private Page<Book> bookPages; //хранит список найденных книг
     private List<Book> topBooks;
@@ -59,6 +72,19 @@ public class BookController extends AbstractController<Book> {
         lazyModel = new LazyDataTable<>(this);
     }
 
+    public void save() {
+
+        if(null != uploadedImage) {
+            selectedBook.setImage(uploadedImage);
+        }
+
+        if(null != uploadedContent) {
+            selectedBook.setContent(uploadedContent);
+        }
+
+        bookDao.save(selectedBook);
+        RequestContext.getCurrentInstance().execute("PF('dialogEditBook').hide()");
+    }
 
     // метод автоматически вызывается из LazyDataTable
     @Override
@@ -89,6 +115,40 @@ public class BookController extends AbstractController<Book> {
 
 
         return bookPages;
+    }
+
+
+    @Override
+    public void addAction() {
+        selectedBook = new Book();
+        uploadedImage = loadDefaultIcon();
+        uploadedContent = null;
+
+        RequestContext.getCurrentInstance().execute("PF('dialogEditBook').show()");
+    }
+
+    private byte[] loadDefaultIcon() {
+        try(InputStream stream = FacesContext.getCurrentInstance().getExternalContext().getResourceAsStream("/resources/images/no-cover.jpg")) {
+            return IOUtils.toByteArray(stream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    @Override
+    public void editAction() {
+        uploadedImage = selectedBook.getImage();
+
+        // выбранный book уже будет записан в переменную selectedBook (как только пользователь кликнет на редактирование)
+        // книга отобразится в диалоговом окне
+        RequestContext.getCurrentInstance().execute("PF('dialogEditBook').show()");
+    }
+
+    @Override
+    public void deleteAction() {
+        bookDao.delete(selectedBook);
     }
 
     public List<Book> getTopBooks() {
@@ -131,8 +191,70 @@ public class BookController extends AbstractController<Book> {
         return message;
     }
 
+    public byte[] getContent(long id) {
+
+        byte[] content;
+
+        if(uploadedContent != null) {
+            content = uploadedContent;
+        } else {
+            content = bookDao.getContent(id);
+        }
+
+        return content;
+    }
+
+    public void uploadImage(FileUploadEvent event) {
+        if(event.getFile() != null) {
+            uploadedImage = event.getFile().getContents();
+        }
+    }
+
+    public void uploadContent(FileUploadEvent event) {
+        if(event.getFile() != null) {
+            uploadedContent = event.getFile().getContents();
+        }
+    }
+
     public void searchAction() {
         searchType = SearchType.SEARCH_TEXT;
+    }
+
+    public void updateViewCount(long viewCount, long id) {
+        bookDao.updateViewCount(viewCount+1, id);
+    }
+
+    public void onRate(RateEvent rateEvent) {
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+        int bookIndex = Integer.parseInt(params.get("bookIndex"));
+
+        Book book = bookPages.getContent().get(bookIndex);
+
+        long currentRating = Long.parseLong(rateEvent.getRating().toString());
+
+        long newRating = book.getTotalRating() + currentRating;
+
+        long newVoteCount = book.getTotalVoteCount()+1;
+
+        int newAvgRating = calcAverageRating(newRating, newVoteCount);
+
+        bookDao.updateRating(newRating, newVoteCount, newAvgRating, book.getId());
+    }
+
+    private int calcAverageRating(long totalRating, long totalVoteCount) {
+        if(totalRating == 0 || totalVoteCount == 0) {
+            return 0;
+        }
+
+        return(int)(totalRating / totalVoteCount);
+    }
+
+    public Page<Book> getBookPages(){
+        return bookPages;
+    }
+
+    public void onCloseDialog(CloseEvent event) {
+        uploadedContent = null;
     }
 
 }
