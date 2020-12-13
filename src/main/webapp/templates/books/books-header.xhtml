@@ -28,13 +28,13 @@
                                 </li>
                             </ui:fragment>
 
-                            <ui:fragment>
+                            <ui:fragment rendered="#{userController.hasRole('ADMIN')}">
                                 <li>
                                     <h:outputLink value="#{request.contextPath}/pages/spr.xhtml">#{msg.dict}</h:outputLink>
                                 </li>
                             </ui:fragment>
 
-                            <ui:fragment>
+                            <ui:fragment rendered="#{userController.hasRole('ADMIN')}">
                                 <li class="colored">
                                     <p:commandLink title="Add button" actionListener="#{bookController.addAction}" update="@([id$=dialogEditBook])" styleClass="new-book-item">
                                         <p:outputLabel value="#{msg.add_book}" styleClass="new-book-label" />
