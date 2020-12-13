@@ -1,5 +1,6 @@
 package com.techqar.weblibrary.jsfui.controller;
 
+import com.google.common.base.Strings;
 import com.techqar.weblibrary.dao.PublisherDao;
 import com.techqar.weblibrary.domain.Publisher;
 import com.techqar.weblibrary.jsfui.model.LazyDataTable;
@@ -30,6 +31,9 @@ public class PublisherController extends AbstractController<Publisher> {
     @Autowired
     private PublisherDao publisherDao;
 
+    @Autowired
+    private SprController sprController;
+
     private Publisher selectedPublisher;
 
     private LazyDataTable<Publisher> lazyModel;
@@ -45,7 +49,17 @@ public class PublisherController extends AbstractController<Publisher> {
     }
 
     @Override
-    public Page<Publisher> search(int first, int count, String sortField, Sort.Direction sortDirection) {
+    public Page<Publisher> search(int pageNumber, int pageSize, String sortField, Sort.Direction sortDirection) {
+        if (sortField == null) {
+            sortField = "name";
+        }
+
+        if (Strings.isNullOrEmpty(sprController.getSearchText())) {
+            publisherPages = publisherDao.getAll(pageNumber, pageSize, sortField, sortDirection);
+        } else {
+            publisherPages = publisherDao.search(pageNumber, pageSize, sortField, sortDirection, sprController.getSearchText());
+        }
+
         return publisherPages;
     }
 
@@ -54,28 +68,20 @@ public class PublisherController extends AbstractController<Publisher> {
         selectedPublisher = new Publisher();
 
         showEditDialog();
-
     }
 
 
     @Override
     public void editAction() {
-
-        // выбранный publisher уже будет записан в переменную selectedPublisher (как только пользователь кликнет на редактирование)
-        // он отобразится в диалоговом окне
         showEditDialog();
-
     }
 
     @Override
     public void deleteAction() {
-
-        // выбранный publisher уже будет записан в переменную selectedPublisher (как только пользователь кликнет на удаление)
         publisherDao.delete(selectedPublisher);
     }
 
     private void showEditDialog() {
-
         // показывает диалоговое окно со значениями selectedPublisher
         RequestContext.getCurrentInstance().execute("PF('dialogPublisher').show()");
     }
