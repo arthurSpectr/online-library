@@ -57,13 +57,15 @@ public class GenreService implements GenreDao {
     @Override
     public void delete(Genre genre) {
         genreRepo.delete(genre);
+    }
 
+    public void delete(Long id) {
+        genreRepo.deleteById(id);
     }
 
     @Override
     public Genre get(long id) {
-        Optional<Genre> bookmark = genreRepo.findById(id); // Optional - обертка, в котором может быть значение или пусто (используется для исключение ошибки NullPointerException
-        // если значение представлено - вернуть его
+        Optional<Genre> bookmark = genreRepo.findById(id);
         return bookmark.orElse(null);
     }
 

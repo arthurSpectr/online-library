@@ -27,3 +27,14 @@ spring:
         show-sql: false
     main:
         banner-mode: 'off'
+
+management:
+    endpoint:
+        mappings:
+            enabled: true
+    endpoints:
+        web:
+            exposure:
+                include: "*"
+
+

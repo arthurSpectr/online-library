@@ -1,5 +1,6 @@
 package com.techqar.weblibrary.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +29,7 @@ public class Genre {
 
     private String name;
 
-//    @Basic(fetch = FetchType.LAZY)
+    @JsonIgnore
     @OneToMany(mappedBy = "genre", fetch = FetchType.LAZY)
     private List<Book> books;
 

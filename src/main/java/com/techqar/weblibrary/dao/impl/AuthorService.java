@@ -60,6 +60,10 @@ public class AuthorService implements AuthorDao {
         authorRepo.delete(author);
     }
 
+    public void delete(Long id) {
+        authorRepo.deleteById(id);
+    }
+
     @Override
     public Author get(long id) {
         Optional<Author> bookmark = authorRepo.findById(id); // Optional - обертка, в котором может быть значение или пусто (используется для исключение ошибки NullPointerException

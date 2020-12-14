@@ -69,6 +69,10 @@ public class BookService implements BookDao {
         bookRepo.delete(book);
     }
 
+    public void delete(long id) {
+        bookRepo.deleteById(id);
+    }
+
     @Override
     public Book get(long id) {
         Optional<Book> bookmark = bookRepo.findById(id); // Optional - обертка, в котором может быть значение или пусто (используется для исключение ошибки NullPointerException

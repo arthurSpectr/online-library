@@ -1,6 +1,7 @@
 package com.techqar.weblibrary.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -54,6 +55,7 @@ public class Book {
 
     private String name;
 
+    @JsonIgnore
     @Type(type = "org.hibernate.type.BinaryType")
     @Column(updatable = false)
     private byte[] content;

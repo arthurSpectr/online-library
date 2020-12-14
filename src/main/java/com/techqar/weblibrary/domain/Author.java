@@ -1,5 +1,6 @@
 package com.techqar.weblibrary.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,7 +31,7 @@ public class Author {
 
     private Date birthday;
 
-//    @Basic(fetch = FetchType.LAZY)
+    @JsonIgnore
     @OneToMany(mappedBy = "author", fetch = FetchType.LAZY)
     private List<Book> books;
 

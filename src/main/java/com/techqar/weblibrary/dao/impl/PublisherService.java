@@ -20,7 +20,6 @@ public class PublisherService implements PublisherDao {
     @Autowired
     private PublisherRepo publisherRepo;
 
-
     @Override
     public List<Publisher> getAll() {
         return publisherRepo.findAll();
@@ -30,13 +29,10 @@ public class PublisherService implements PublisherDao {
         return publisherRepo.findAll(sort);
     }
 
-
-
     @Override
     public Page<Publisher> getAll(int pageNumber, int pageSize, String sortField, Sort.Direction sortDirection) {
         return publisherRepo.findAll(PageRequest.of(pageNumber, pageSize, Sort.by(sortDirection, sortField)));
     }
-
 
     @Override
     public List<Publisher> search(String... searchString) {
@@ -48,7 +44,6 @@ public class PublisherService implements PublisherDao {
         return publisherRepo.findByNameContainingIgnoreCaseOrderByName(searchString[0], PageRequest.of(pageNumber, pageSize, Sort.by(sortDirection, sortField)));
     }
 
-
     @Override
     public Publisher save(Publisher publisher) {
         return publisherRepo.save(publisher);
@@ -59,15 +54,14 @@ public class PublisherService implements PublisherDao {
         publisherRepo.delete(publisher);
     }
 
+    public void delete(Long id) {
+        publisherRepo.deleteById(id);
+    }
 
     @Override
     public Publisher get(long id) {
-        Optional<Publisher> bookmark = publisherRepo.findById(id); // Optional - обертка, в котором может быть значение или пусто (используется для исключение ошибки NullPointerException
-        // если значение представлено - вернуть его
+        Optional<Publisher> bookmark = publisherRepo.findById(id);
         return bookmark.orElse(null);
     }
-
-
-
 
 }
