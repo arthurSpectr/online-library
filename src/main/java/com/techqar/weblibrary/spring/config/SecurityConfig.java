@@ -59,6 +59,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                     .logoutSuccessUrl("/index.xhtml")
                     .deleteCookies("JSESSIONID", "SPRING_SECURITY_REMEMBER_ME_COOKIE")
-                    .invalidateHttpSession(true);
+                    .invalidateHttpSession(true)
+                .and()
+                    .requiresChannel().anyRequest().requiresSecure() // to redirect all requests to https
+                .and()
+                    .portMapper()
+                    .http(8080).mapsTo(8181); // map all requests on 8080 to redirect on 8181
     }
 }
